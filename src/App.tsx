@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Axios  from "axios";
+import axios  from "axios";
 
 function App() {
 
@@ -9,8 +9,26 @@ function App() {
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=ed61abb5f4541ab83d848606d66312d7`
 
+  const searchLocation = (event)=>{
+    if (event.key ==='Enter'){
+      axios.get(url).then((response)=>{
+        setData(response.data)
+        console.log(response.data)
+     })
+    }
+  }
+
   return (
     <div className="app">
+      <div className="search">
+        <input
+        value={location}
+        onChange={event => setLocation(event.target.value)}
+        onKeyDown={searchLocation}
+        placeholder="Enter Location"
+        type="text" 
+        />
+      </div>
       <div className="container">
         <div className="top">
           <div className="location">
