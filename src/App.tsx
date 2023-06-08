@@ -1,63 +1,68 @@
-import { useState } from "react"
-import axios  from "axios";
+import { useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [data, setData] = useState({});
 
-  const [data,setData] = useState({});
+  const [location, setLocation] = useState("");
 
-  const [location,setLocation] = useState('');
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=ed61abb5f4541ab83d848606d66312d7`;
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=ed61abb5f4541ab83d848606d66312d7`
-
-  const searchLocation = (event)=>{
-    if (event.key ==='Enter'){
-      axios.get(url).then((response)=>{
-        setData(response.data)
-        console.log(response.data)
-     })
+  const searchLocation = (event) => {
+    if (event.key === "Enter") {
+      axios.get(url).then((response) => {
+        setData(response.data);
+        console.log(response.data);
+      });
+      setLocation("");
     }
-  }
+  };
 
   return (
     <div className="app">
       <div className="search">
         <input
-        value={location}
-        onChange={event => setLocation(event.target.value)}
-        onKeyDown={searchLocation}
-        placeholder="Enter Location"
-        type="text" 
+          value={location}
+          onChange={(event) => setLocation(event.target.value)}
+          onKeyDown={searchLocation}
+          placeholder="Enter Location"
+          type="text"
         />
       </div>
       <div className="container">
         <div className="top">
           <div className="location">
-            <p>Havana</p>
+            <p>{data.name}</p>
           </div>
           <div className="temp">
-            <h1>305ºF</h1>
+            {data.main ? <h1>{data.main.temp.toFixed()}ºF</h1> : null}
           </div>
           <div className="description">
-            <p>Clear</p>
+            {data.weather ? <p>{data.weather[0].main}</p> : null}
           </div>
         </div>
-        <div className="bottom">
-          <div className="feels">
-            <p className="bold">307ºF</p>
-            <p>Feels Like</p>
+
+        {data.name != undefined && (
+          <div className="bottom">
+            <div className="feels">
+              {data.main ? (
+                <p className="bold">{data.main.feels_like.toFixed()}ºF</p>
+              ) : null}
+              <p>Feels Like</p>
+            </div>
+            <div className="humidity">
+              {data.main ? <p className="bold">{data.main.humidity}%</p> : null}
+              <p>Humidity</p>
+            </div>
+            <div className="wind">
+              {data.wind ? <p className="bold">{data.wind.speed.toFixed()} MPH</p> : null}
+              <p>Wind Speed</p>
+            </div>
           </div>
-          <div className="humidity">
-            <p className="bold">52%</p>
-            <p>Humidity</p>
-          </div>
-          <div className="wind">
-            <p className="bold">3 MPH</p>
-            <p>Wind Speed</p>
-          </div>
-        </div>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
