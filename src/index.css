@@ -47,8 +47,8 @@ h1{
 }
 
 .search_button{
-  padding: .5rem .3rem;
-  font-size: 1rem;
+  padding: .7rem .5rem;
+  font-size: 1.2rem;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.1);
   color: #f8f8f8;
@@ -126,6 +126,15 @@ h1{
   .app input {
     padding: 0.5rem 1rem;
     font-size: 1rem;
+  }
+
+  .search_button{
+    padding: .5rem .3rem;
+    font-size: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8f8f8;
+    outline: none;
   }
 
   .app .bottom {
