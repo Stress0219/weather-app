@@ -25,13 +25,12 @@ function App() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
+          const { latitude, longitude } = position.coords;
 
           const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=imperial&appid=ed61abb5f4541ab83d848606d66312d7`;
       
-          axios.get(url).then((response) => {
-            setData(response.data as WeatherData);
+          axios.get<WeatherData>(url).then((response) => {
+            setData(response.data);
           });
         },
         (error) => {
@@ -41,27 +40,38 @@ function App() {
     }
   }, []);
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=ed61abb5f4541ab83d848606d66312d7`;
+  const searchLocation = async () => {
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=imperial&appid=ed61abb5f4541ab83d848606d66312d7`;
 
-  const searchLocation = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      axios.get(url).then((response) => {
-        setData(response.data as WeatherData);
-      });
+      const response = await axios.get<WeatherData>(url);
+      setData(response.data);
       setLocation("");
-    }}
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    searchLocation();
+  };
 
   return (
     <div className="app">
-      <div className="search">
+      <form className="search" onSubmit={handleSearch}>
         <input
           value={location}
-          onChange={(event) => setLocation(event.target.value)}
-          onKeyDown={searchLocation}
+          onChange={handleInputChange}
           placeholder="Enter Location"
           type="text"
         />
-      </div>
+        <button type="submit" className="search_button">Search</button>
+      </form>
       <div className="container">
         {data ? (
           <div>
@@ -93,7 +103,7 @@ function App() {
           </div>
         ) : (
           <div className="loading">
-          <CircularProgress />
+            <CircularProgress />
           </div>
         )}
       </div>
